@@ -52,11 +52,13 @@ public class TestBase {
 		System.out.println("Browser setup up is completed");
 	}
 
+	public void closeBrowser() {
+		driver.get().close();
+		driver.remove();
+	}
+
 	@AfterTest
 	public void tearDown() {
-		if (getDriver() != null) {
-			getDriver().quit();
-		}
-
+		closeBrowser();
 	}
 }
