@@ -24,7 +24,7 @@ public class TestBase {
 	}
 
 	public WebDriver getDriver() {
-		return driver.get();
+		return this.driver.get();
 	}
 
 	@Parameters("browser")
@@ -49,12 +49,12 @@ public class TestBase {
 		getDriver().manage().window().maximize();
 		getDriver().get(Constant.URL);
 
-		System.out.println("Browser setup is completed");
+		System.out.println("Browser setup up is completed");
 	}
 
 	@AfterTest
 	public void tearDown() {
-		if (driver != null) {
+		if (getDriver() != null) {
 			getDriver().quit();
 		}
 

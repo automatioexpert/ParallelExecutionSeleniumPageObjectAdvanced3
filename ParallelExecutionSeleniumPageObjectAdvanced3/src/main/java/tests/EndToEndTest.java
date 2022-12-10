@@ -1,6 +1,10 @@
 package tests;
 
+import java.util.List;
+
+import org.apache.commons.logging.Log;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -12,6 +16,7 @@ import pages.CheckOutStepTwoPage;
 import pages.CheckoutCompletePage;
 import pages.InventoryPage;
 import pages.LoginPage;
+import pages.SettingsPage;
 import utilities.SeleniumUtils;
 
 public class EndToEndTest extends TestBase {
@@ -26,6 +31,7 @@ public class EndToEndTest extends TestBase {
 	public CheckOutStepTwoPage checkOutStepTwo;
 	public CheckoutCompletePage checkOutComplete;
 	public SeleniumUtils seleniumUtils;
+	public SettingsPage settingPage;
 
 	@BeforeClass
 	public void classSetUp() {
@@ -35,65 +41,86 @@ public class EndToEndTest extends TestBase {
 		checkOutStepOne = new CheckOutStepOnePage(getDriver());
 		checkOutStepTwo = new CheckOutStepTwoPage(getDriver());
 		checkOutComplete = new CheckoutCompletePage(getDriver());
-		seleniumUtils=new SeleniumUtils(getDriver());
-		
+		seleniumUtils = new SeleniumUtils(getDriver());
+		settingPage = new SettingsPage(getDriver());
+
 	}
-/*
+	/*
+	 * @Test(priority = 0) public void loginTest() throws InterruptedException {
+	 * loginPage.getUserName().sendKeys("standard_user");
+	 * loginPage.getPassword().sendKeys("secret_sauce");
+	 * loginPage.getLoginButton().click(); Thread.sleep(3000);
+	 * 
+	 * String expectedText = "PRODUCTS"; String actualText =
+	 * getDriver().findElement(By.cssSelector("span.title")).getText();
+	 * Assert.assertEquals(actualText, expectedText);
+	 * System.out.println("Login Test Passed");
+	 * 
+	 * }
+	 */
+
 	@Test(priority = 0)
 	public void loginTest() throws InterruptedException {
 		loginPage.getUserName().sendKeys("standard_user");
 		loginPage.getPassword().sendKeys("secret_sauce");
-		loginPage.getLoginButton().click();
-		Thread.sleep(3000);
-
-		String expectedText = "PRODUCTS";
-		String actualText = getDriver().findElement(By.cssSelector("span.title")).getText();
-		Assert.assertEquals(actualText, expectedText);
-		System.out.println("Login Test Passed");
-
-	} */
-	
-	@Test(priority = 0)
-	public void loginTest() throws InterruptedException {
-		loginPage.getUserName().sendKeys("standard_user");
-		loginPage.getPassword().sendKeys("secret_sauce");
-		//InventoryPage inventory=loginPage.getLoginButton();
+		// InventoryPage inventory=loginPage.getLoginButton();
 		loginPage.getLoginButton();
 		Thread.sleep(3000);
 		String expectedText = "PRODUCTS";
-		//String actualText = getDriver().findElement(By.cssSelector("span.title")).getText();
-		String actualText=seleniumUtils.getText("//span[@class='title']");
-		System.out.println("Actual text from Selenium Utilis: "+actualText);
+		// String actualText =
+		// getDriver().findElement(By.cssSelector("span.title")).getText();
+		String actualText = seleniumUtils.getText("//span[@class='title']");
+		System.out.println("Actual text from Selenium Utilis: " + actualText);
 		Assert.assertEquals(actualText, expectedText);
 		System.out.println("Login Test Passed");
 
 	}
 
 	/*
-	@Test(priority = 1)
-	public void selectProductAndCheckOutTest() {
-		inventory.getAddTshirtButton().click();
-		CartPage cart=inventory.getGoToShoppingCartButton();
-		CheckOutStepOnePage checkStep1=cart.getCheckButton();
-		checkStep1.enterCustomerDetails("user47778", "Smith", "+1-12399230");
-		CheckOutStepTwoPage checkStep2=checkStep1.getContinueBtn();
-		CheckoutCompletePage checkOutComplete=checkStep2.getFinishButton();
-		checkOutComplete.getBackToHomeButton();
-
-		System.out.println("End to End Test Execution completed...Test Passed");
-	} */
-
+	 * @Test(priority = 1) public void selectProductAndCheckOutTest() {
+	 * inventory.getAddTshirtButton().click(); CartPage
+	 * cart=inventory.getGoToShoppingCartButton(); CheckOutStepOnePage
+	 * checkStep1=cart.getCheckButton();
+	 * checkStep1.enterCustomerDetails("user47778", "Smith", "+1-12399230");
+	 * CheckOutStepTwoPage checkStep2=checkStep1.getContinueBtn();
+	 * CheckoutCompletePage checkOutComplete=checkStep2.getFinishButton();
+	 * checkOutComplete.getBackToHomeButton();
+	 * 
+	 * System.out.println("End to End Test Execution completed...Test Passed"); }
+	 */
 
 	@Test(priority = 1)
 	public void selectProductAndCheckOutTest() {
 		inventory.getAddTshirtButton().click();
-		CheckOutStepOnePage checkStep1=inventory.getGoToShoppingCartButton().getCheckButton();
-		//CheckOutStepOnePage checkStep1=cart.getCheckButton();
+		CheckOutStepOnePage checkStep1 = inventory.getGoToShoppingCartButton().getCheckButton();
+		// CheckOutStepOnePage checkStep1=cart.getCheckButton();
 		checkStep1.enterCustomerDetails("user47778", "Smith", "+1-12399230");
-		CheckoutCompletePage checkStep2=checkStep1.getContinueBtn().getFinishButton();
-		//CheckoutCompletePage checkOutComplete=checkStep2.getFinishButton();
+		CheckoutCompletePage checkStep2 = checkStep1.getContinueBtn().getFinishButton();
+		// CheckoutCompletePage checkOutComplete=checkStep2.getFinishButton();
 		checkStep2.getBackToHomeButton();
 
 		System.out.println("End to End Test Execution completed...Test Passed");
 	}
+
+	@Test(priority = 2)
+	public void getMenuListItemTest() {
+
+		settingPage.getSettingMenu().click();
+		List<WebElement> items = settingPage.itemList();
+		System.out.println("Total item present in the list are: " + items.size());
+		for (WebElement item : items) {
+			System.out.println(item.getText());
+		}
+
+	}
+
+	@Test(priority = 3)
+	public void logOutTest() {
+		LoginPage login = settingPage.performLogOut();
+		boolean status = login.getLoginBtn().isDisplayed();
+		Assert.assertTrue(status);
+		System.out.println("logOutTest Passed");
+
+	}
+
 }
